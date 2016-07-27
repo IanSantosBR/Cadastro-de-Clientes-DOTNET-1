@@ -22,8 +22,7 @@ namespace Cadastro_de_Clientes
 
         private void salvarButton_Click(object sender, EventArgs e)
         {
-            if ((nomeTextBox.Text.Length >= 3) && (cpfTextBox.Text.Length == 11) && (enderecoTextBox.Text.Length >= 4) &&
-                (telefoneTextBox.Text.Length >= 10))
+            if ((nomeTextBox.Text.Length >= 3) && (cpfTextBox.Text.Length == 11) && (enderecoTextBox.Text.Length >= 4) && (telefoneTextBox.Text.Length >= 10))
             {
                 var random = new Random();
                 var cliente = new Cliente
@@ -35,8 +34,7 @@ namespace Cadastro_de_Clientes
                     Telefone = telefoneTextBox.Text
                 };
 
-                if ((nomeTextBox.Text.Distinct().Count() > 1) && (cpfTextBox.Text.Distinct().Count() > 1) &&
-                    (enderecoTextBox.Text.Distinct().Count() > 1) && (telefoneTextBox.Text.Distinct().Count() > 1))
+                if ((nomeTextBox.Text.Distinct().Count() > 1) && (cpfTextBox.Text.Distinct().Count() > 1) && (enderecoTextBox.Text.Distinct().Count() > 1) && (telefoneTextBox.Text.Distinct().Count() > 1))
                 {
                     DialogResult = MessageBox.Show(@"Deseja adicionar?" + Environment.NewLine + Environment.NewLine + @"Nome: " + cliente.Nome + Environment.NewLine + @"CPF: " + cliente.Cpf + Environment.NewLine + @"Endereço: " + cliente.Endereco + Environment.NewLine + @"Telefone: " + cliente.Telefone, @"Confirmação de Cadastro", MessageBoxButtons.YesNo);
                     if (DialogResult == DialogResult.Yes)
