@@ -22,43 +22,57 @@ namespace Cadastro_de_Clientes
 
         private void salvarButton_Click(object sender, EventArgs e)
         {
-            if ((nomeTextBox.Text.Length >= 3) && (cpfTextBox.Text.Length == 11) && (enderecoTextBox.Text.Length >= 4) && (telefoneTextBox.Text.Length >= 10))
+            if (ValidaCadastro())
             {
-                var random = new Random();
+                var random = new Random();  
                 var cliente = new Cliente
                 {
                     ClienteId = random.Next(1, int.MaxValue),
                     Nome = nomeTextBox.Text.Trim(),
-                    Cpf = cpfTextBox.Text,
+                    Cpf = cpfmaskedTextBox.Text,
                     Endereco = enderecoTextBox.Text.Trim(),
-                    Telefone = telefoneTextBox.Text
+                    Telefone = telefoneMaskedTextBox.Text
                 };
-
-                if ((nomeTextBox.Text.Distinct().Count() > 1) && (cpfTextBox.Text.Distinct().Count() > 1) && (enderecoTextBox.Text.Distinct().Count() > 1) && (telefoneTextBox.Text.Distinct().Count() > 1))
+                DialogResult = MessageBox.Show(@"Deseja adicionar?" + Environment.NewLine + Environment.NewLine + @"Nome: " + cliente.Nome + Environment.NewLine + @"CPF: " + cliente.Cpf + Environment.NewLine + @"Endereço: " + cliente.Endereco + Environment.NewLine + @"Telefone: " + cliente.Telefone, @"Confirmação de Cadastro", MessageBoxButtons.YesNo);
+                if (DialogResult == DialogResult.Yes)
                 {
-                    DialogResult = MessageBox.Show(@"Deseja adicionar?" + Environment.NewLine + Environment.NewLine + @"Nome: " + cliente.Nome + Environment.NewLine + @"CPF: " + cliente.Cpf + Environment.NewLine + @"Endereço: " + cliente.Endereco + Environment.NewLine + @"Telefone: " + cliente.Telefone, @"Confirmação de Cadastro", MessageBoxButtons.YesNo);
-                    if (DialogResult == DialogResult.Yes)
+                    _listaClientes.Add(cliente);
+                    MessageBox.Show(@"Cliente adicionado.", @"Confirmação de Cadastro", MessageBoxButtons.OK);
+                    foreach (var textBox in Controls.OfType<TextBox>())
                     {
-                        _listaClientes.Add(cliente);
-                        MessageBox.Show(@"Cliente adicionado.", @"Confirmação de Cadastro", MessageBoxButtons.OK);
-                        foreach (var textBox in Controls.OfType<TextBox>())
-                        {
-                            textBox.Clear();
-                        }
+                        textBox.Clear();
                     }
-                    else
+                    foreach (var maskedTextBox in Controls.OfType<MaskedTextBox>())
                     {
-                        MessageBox.Show(@"Cliente não adicionado.", @"Confirmação de Cadastro", MessageBoxButtons.OK);
+                        maskedTextBox.Clear();
                     }
                 }
                 else
                 {
-                    MessageBox.Show(@"Campos não podem conter somente um tipo de caractere.", @"Campo Inválido", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show(@"Cliente não adicionado.", @"Confirmação de Cadastro", MessageBoxButtons.OK);
                 }
             }
-            else
+        }
+
+        #endregion
+
+        #region Código responsável por apagar todos os campos
+
+        private void limparButton_Click(object sender, EventArgs e)
+        {
+            foreach (var textBox in cadastroGroupBox.Controls.OfType<TextBox>())
             {
-                MessageBox.Show(@"Número de caracteres inseridos é insuficiente.", @"Caracteres Insuficientes", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                textBox.Clear();
+            }
+
+            foreach (var maskedTextBox in cadastroGroupBox.Controls.OfType<MaskedTextBox>())
+            {
+                maskedTextBox.Clear();
+            }
+
+            foreach (var label in infoGroupBox.Controls.OfType<Label>())
+            {
+                label.Visible = false;
             }
         }
 
@@ -90,19 +104,24 @@ namespace Cadastro_de_Clientes
             e.Handled = !(char.IsLetter(e.KeyChar) || (e.KeyChar == (char) Keys.Space) || (e.KeyChar == (char) Keys.Back));
         }
 
-        private void cpfTextBox_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = !(char.IsDigit(e.KeyChar) || (e.KeyChar == (char) Keys.Back));
-        }
-
         private void enderecoTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = !(char.IsLetter(e.KeyChar) || (char.IsNumber(e.KeyChar) || (e.KeyChar == (char) Keys.Space)) || (e.KeyChar == (char) Keys.Back) || (e.KeyChar == ','));
         }
 
-        private void telefoneTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        private Boolean ValidaCadastro()
         {
-            e.Handled = !(char.IsDigit(e.KeyChar) || (e.KeyChar == (char) Keys.Back));
+            nomeErrorLabel.Visible = nomeTextBox.TextLength < 10 || nomeTextBox.Text.Distinct().Count() < 2;
+            cpfErrorLabel.Visible = cpfmaskedTextBox.Text.Replace(" ", "").Length < 11 || cpfmaskedTextBox.Text.Replace(" ","").Distinct().Count() < 2;
+            enderecoErrorLabel.Visible = enderecoTextBox.Text.Length < 10 || enderecoTextBox.Text.Distinct().Count() < 2;
+            telefoneErrorLabel.Visible = telefoneMaskedTextBox.Text.Replace(" ", "").Length < 10 || telefoneMaskedTextBox.Text.Replace(" ", "").Distinct().Count() < 2;
+
+            if (nomeErrorLabel.Visible || cpfErrorLabel.Visible || enderecoErrorLabel.Visible || telefoneErrorLabel.Visible)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         #endregion
