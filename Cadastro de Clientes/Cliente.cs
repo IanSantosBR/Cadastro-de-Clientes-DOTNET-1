@@ -2,7 +2,7 @@
 
 namespace Cadastro_de_Clientes
 {
-    internal class Cliente
+    public class Cliente
     {
         public int ClienteId { get; set; }
         public string Nome { get; set; }

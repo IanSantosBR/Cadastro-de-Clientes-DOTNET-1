@@ -1,9 +1,8 @@
-﻿// GEC5 AV1 Laboratório de Programação (.NET I) - Ian Santos / Data da última edição: 27/07/2016
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System.Data.Entity;
 
 namespace Cadastro_de_Clientes
 {
@@ -37,6 +36,22 @@ namespace Cadastro_de_Clientes
                 if (DialogResult == DialogResult.Yes)
                 {
                     _listaClientes.Add(cliente);
+                    using (var bd = new Bd())
+                    {
+                        var c = new Cliente
+                        {
+                            Nome = nomeTextBox.Text.Trim(),
+                            Cpf = cpfmaskedTextBox.Text,
+                            Endereco = enderecoTextBox.Text.Trim(),
+                            Telefone = telefoneMaskedTextBox.Text
+                        };
+                        bd.Clientes.Add(c);
+                        bd.SaveChanges();
+                        foreach (var item in bd.Clientes.ToList())
+                        {
+                            MessageBox.Show(item.ClienteId + @"		" + item.Nome + @"		" + item.Cpf + @"		" + item.Endereco + @"		" + item.Telefone);
+                        }
+                    }
                     MessageBox.Show(@"Cliente adicionado.", @"Confirmação de Cadastro", MessageBoxButtons.OK);
                     foreach (var textBox in Controls.OfType<TextBox>())
                     {
@@ -64,12 +79,10 @@ namespace Cadastro_de_Clientes
             {
                 textBox.Clear();
             }
-
             foreach (var maskedTextBox in cadastroGroupBox.Controls.OfType<MaskedTextBox>())
             {
                 maskedTextBox.Clear();
             }
-
             foreach (var label in infoGroupBox.Controls.OfType<Label>())
             {
                 label.Visible = false;
@@ -103,27 +116,28 @@ namespace Cadastro_de_Clientes
         {
             e.Handled = !(char.IsLetter(e.KeyChar) || (e.KeyChar == (char) Keys.Space) || (e.KeyChar == (char) Keys.Back));
         }
-
         private void enderecoTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = !(char.IsLetter(e.KeyChar) || (char.IsNumber(e.KeyChar) || (e.KeyChar == (char) Keys.Space)) || (e.KeyChar == (char) Keys.Back) || (e.KeyChar == ','));
         }
-
         private Boolean ValidaCadastro()
         {
             nomeErrorLabel.Visible = nomeTextBox.TextLength < 10 || nomeTextBox.Text.Distinct().Count() < 2;
             cpfErrorLabel.Visible = cpfmaskedTextBox.Text.Replace(" ", "").Length < 11 || cpfmaskedTextBox.Text.Replace(" ","").Distinct().Count() < 2;
             enderecoErrorLabel.Visible = enderecoTextBox.Text.Length < 10 || enderecoTextBox.Text.Distinct().Count() < 2;
             telefoneErrorLabel.Visible = telefoneMaskedTextBox.Text.Replace(" ", "").Length < 10 || telefoneMaskedTextBox.Text.Replace(" ", "").Distinct().Count() < 2;
-
             if (nomeErrorLabel.Visible || cpfErrorLabel.Visible || enderecoErrorLabel.Visible || telefoneErrorLabel.Visible)
             {
                 return false;
             }
-
             return true;
         }
 
         #endregion
+
+    }
+    public class Bd : DbContext
+    {
+        public DbSet<Cliente> Clientes { get; set; }
     }
 }
