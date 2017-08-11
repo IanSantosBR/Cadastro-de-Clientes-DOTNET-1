@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using System.Data.Entity;
 
 namespace Cadastro_de_Clientes
 {
     public partial class CadastroClientes : Form
     {
-        private readonly List<Cliente> _listaClientes = new List<Cliente>();
-
         public CadastroClientes()
         {
             InitializeComponent();
@@ -22,49 +18,28 @@ namespace Cadastro_de_Clientes
         private void salvarButton_Click(object sender, EventArgs e)
         {
             if (ValidaCadastro())
-            {
-                var random = new Random();  
-                var cliente = new Cliente
+            {             
+                using (var bd = new Database())
                 {
-                    ClienteId = random.Next(1, int.MaxValue),
-                    Nome = nomeTextBox.Text.Trim(),
-                    Cpf = cpfmaskedTextBox.Text,
-                    Endereco = enderecoTextBox.Text.Trim(),
-                    Telefone = telefoneMaskedTextBox.Text
-                };
-                DialogResult = MessageBox.Show(@"Deseja adicionar?" + Environment.NewLine + Environment.NewLine + @"Nome: " + cliente.Nome + Environment.NewLine + @"CPF: " + cliente.Cpf + Environment.NewLine + @"Endereço: " + cliente.Endereco + Environment.NewLine + @"Telefone: " + cliente.Telefone, @"Confirmação de Cadastro", MessageBoxButtons.YesNo);
-                if (DialogResult == DialogResult.Yes)
-                {
-                    _listaClientes.Add(cliente);
-                    using (var bd = new Bd())
+                    var cliente = new Cliente
                     {
-                        var c = new Cliente
-                        {
-                            Nome = nomeTextBox.Text.Trim(),
-                            Cpf = cpfmaskedTextBox.Text,
-                            Endereco = enderecoTextBox.Text.Trim(),
-                            Telefone = telefoneMaskedTextBox.Text
-                        };
-                        bd.Clientes.Add(c);
+                        Nome = nomeTextBox.Text.Trim(),
+                        Cpf = cpfmaskedTextBox.Text,
+                        Endereco = enderecoTextBox.Text.Trim(),
+                        Telefone = telefoneMaskedTextBox.Text
+                    };
+                    DialogResult = MessageBox.Show(@"Deseja adicionar?" + Environment.NewLine + Environment.NewLine + @"Nome: " + cliente.Nome + Environment.NewLine + @"CPF: " + cliente.Cpf + Environment.NewLine + @"Endereço: " + cliente.Endereco + Environment.NewLine + @"Telefone: " + cliente.Telefone, @"Confirmação de Cadastro", MessageBoxButtons.YesNo);
+                    if (DialogResult == DialogResult.Yes)
+                    {
+                        bd.Clientes.Add(cliente);
                         bd.SaveChanges();
-                        foreach (var item in bd.Clientes.ToList())
-                        {
-                            MessageBox.Show(item.ClienteId + @"		" + item.Nome + @"		" + item.Cpf + @"		" + item.Endereco + @"		" + item.Telefone);
-                        }
+                        MessageBox.Show(@"Cliente adicionado.", @"Confirmação de Cadastro", MessageBoxButtons.OK);
+                        ApagarCampos();
                     }
-                    MessageBox.Show(@"Cliente adicionado.", @"Confirmação de Cadastro", MessageBoxButtons.OK);
-                    foreach (var textBox in Controls.OfType<TextBox>())
+                    else
                     {
-                        textBox.Clear();
+                        MessageBox.Show(@"Cliente não adicionado.", @"Confirmação de Cadastro", MessageBoxButtons.OK);
                     }
-                    foreach (var maskedTextBox in Controls.OfType<MaskedTextBox>())
-                    {
-                        maskedTextBox.Clear();
-                    }
-                }
-                else
-                {
-                    MessageBox.Show(@"Cliente não adicionado.", @"Confirmação de Cadastro", MessageBoxButtons.OK);
                 }
             }
         }
@@ -74,6 +49,11 @@ namespace Cadastro_de_Clientes
         #region Código responsável por apagar todos os campos
 
         private void limparButton_Click(object sender, EventArgs e)
+        {
+            ApagarCampos();
+        }
+
+        private void ApagarCampos()
         {
             foreach (var textBox in cadastroGroupBox.Controls.OfType<TextBox>())
             {
@@ -95,16 +75,17 @@ namespace Cadastro_de_Clientes
 
         private void listarButton_Click(object sender, EventArgs e)
         {
-            if (_listaClientes.Count > 0)
+            var bd = new Database();
+            if (bd.Clientes.Any())
             {
-                foreach (var cliente in _listaClientes.OrderBy(cliente => cliente.ClienteId))
+                foreach (var cliente in bd.Clientes.OrderBy(cliente => cliente.ClienteId))
                 {
                     MessageBox.Show(@"Nome: " + cliente.Nome + Environment.NewLine + @"CPF: " + cliente.Cpf + Environment.NewLine + @"Endereço: " + cliente.Endereco + Environment.NewLine + @"Telefone: " + cliente.Telefone, @"Cliente ID " + cliente.ClienteId, MessageBoxButtons.OK);
                 }
             }
             else
             {
-                MessageBox.Show(@"Não há clientes cadastrados.", @"Lista Vazia", MessageBoxButtons.OK, MessageBoxIcon.Information);
+              MessageBox.Show(@"Não há clientes cadastrados.", @"Database Vazia", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -135,9 +116,5 @@ namespace Cadastro_de_Clientes
 
         #endregion
 
-    }
-    public class Bd : DbContext
-    {
-        public DbSet<Cliente> Clientes { get; set; }
     }
 }
