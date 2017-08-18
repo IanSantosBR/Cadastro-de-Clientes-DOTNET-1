@@ -6,7 +6,7 @@ namespace Cadastro_de_Clientes
 {
     public partial class CadastroClientes : Form
     {
-        private readonly string connstr = "Data Source = (localdb)\\mssqllocaldb; Initial Catalog = Cadastro_de_Clientes.Database; Integrated Security = True; MultipleActiveResultSets = True";
+        private readonly string connstr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\Database.mdf;Integrated Security=True";
 
         public CadastroClientes()
         {
