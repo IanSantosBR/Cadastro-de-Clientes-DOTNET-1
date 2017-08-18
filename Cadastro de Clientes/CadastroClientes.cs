@@ -6,6 +6,8 @@ namespace Cadastro_de_Clientes
 {
     public partial class CadastroClientes : Form
     {
+        private readonly string connstr = "Data Source = (localdb)\\mssqllocaldb; Initial Catalog = Cadastro_de_Clientes.Database; Integrated Security = True; MultipleActiveResultSets = True";
+
         public CadastroClientes()
         {
             InitializeComponent();
@@ -18,8 +20,7 @@ namespace Cadastro_de_Clientes
         private void salvarButton_Click(object sender, EventArgs e)
         {
             if (ValidaCadastro())
-            {             
-                using (var bd = new Database())
+                using (var bd = new Database(connstr))
                 {
                     var cliente = new Cliente
                     {
@@ -41,7 +42,20 @@ namespace Cadastro_de_Clientes
                         MessageBox.Show(@"Cliente não adicionado.", @"Confirmação de Cadastro", MessageBoxButtons.OK);
                     }
                 }
-            }
+        }
+
+        #endregion
+
+        #region Código responsável por listar clientes
+
+        private void listarButton_Click(object sender, EventArgs e)
+        {
+            var bd = new Database(connstr);
+            if (bd.Clientes.Any())
+                foreach (var cliente in bd.Clientes.OrderBy(cliente => cliente.ClienteId))
+                    MessageBox.Show(@"Nome: " + cliente.Nome + Environment.NewLine + @"CPF: " + cliente.Cpf + Environment.NewLine + @"Endereço: " + cliente.Endereco + Environment.NewLine + @"Telefone: " + cliente.Telefone, @"Cliente ID " + cliente.ClienteId, MessageBoxButtons.OK);
+            else
+                MessageBox.Show(@"Não há clientes cadastrados.", @"Database Vazia", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         #endregion
@@ -56,37 +70,11 @@ namespace Cadastro_de_Clientes
         private void ApagarCampos()
         {
             foreach (var textBox in cadastroGroupBox.Controls.OfType<TextBox>())
-            {
                 textBox.Clear();
-            }
             foreach (var maskedTextBox in cadastroGroupBox.Controls.OfType<MaskedTextBox>())
-            {
                 maskedTextBox.Clear();
-            }
             foreach (var label in infoGroupBox.Controls.OfType<Label>())
-            {
                 label.Visible = false;
-            }
-        }
-
-        #endregion
-
-        #region Código responsável por listar clientes
-
-        private void listarButton_Click(object sender, EventArgs e)
-        {
-            var bd = new Database();
-            if (bd.Clientes.Any())
-            {
-                foreach (var cliente in bd.Clientes.OrderBy(cliente => cliente.ClienteId))
-                {
-                    MessageBox.Show(@"Nome: " + cliente.Nome + Environment.NewLine + @"CPF: " + cliente.Cpf + Environment.NewLine + @"Endereço: " + cliente.Endereco + Environment.NewLine + @"Telefone: " + cliente.Telefone, @"Cliente ID " + cliente.ClienteId, MessageBoxButtons.OK);
-                }
-            }
-            else
-            {
-              MessageBox.Show(@"Não há clientes cadastrados.", @"Database Vazia", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
         }
 
         #endregion
@@ -95,26 +83,25 @@ namespace Cadastro_de_Clientes
 
         private void nomeTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            e.Handled = !(char.IsLetter(e.KeyChar) || (e.KeyChar == (char) Keys.Space) || (e.KeyChar == (char) Keys.Back));
+            e.Handled = !(char.IsLetter(e.KeyChar) || e.KeyChar == (char) Keys.Space || e.KeyChar == (char) Keys.Back);
         }
+
         private void enderecoTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            e.Handled = !(char.IsLetter(e.KeyChar) || (char.IsNumber(e.KeyChar) || (e.KeyChar == (char) Keys.Space)) || (e.KeyChar == (char) Keys.Back) || (e.KeyChar == ','));
+            e.Handled = !(char.IsLetter(e.KeyChar) || char.IsNumber(e.KeyChar) || e.KeyChar == (char) Keys.Space || e.KeyChar == (char) Keys.Back || e.KeyChar == ',');
         }
-        private Boolean ValidaCadastro()
+
+        private bool ValidaCadastro()
         {
             nomeErrorLabel.Visible = nomeTextBox.TextLength < 10 || nomeTextBox.Text.Distinct().Count() < 2;
-            cpfErrorLabel.Visible = cpfmaskedTextBox.Text.Replace(" ", "").Length < 11 || cpfmaskedTextBox.Text.Replace(" ","").Distinct().Count() < 2;
+            cpfErrorLabel.Visible = cpfmaskedTextBox.Text.Replace(" ", "").Length < 11 || cpfmaskedTextBox.Text.Replace(" ", "").Distinct().Count() < 2;
             enderecoErrorLabel.Visible = enderecoTextBox.Text.Length < 10 || enderecoTextBox.Text.Distinct().Count() < 2;
             telefoneErrorLabel.Visible = telefoneMaskedTextBox.Text.Replace(" ", "").Length < 10 || telefoneMaskedTextBox.Text.Replace(" ", "").Distinct().Count() < 2;
             if (nomeErrorLabel.Visible || cpfErrorLabel.Visible || enderecoErrorLabel.Visible || telefoneErrorLabel.Visible)
-            {
                 return false;
-            }
             return true;
         }
 
         #endregion
-
     }
 }

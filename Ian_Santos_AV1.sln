@@ -1,9 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cadastro de Clientes", "Cadastro de Clientes\Cadastro de Clientes.csproj", "{5220D5A2-E783-4C0E-AD95-7878FC41EDCF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AA5F4100-2193-49B0-93C7-B5A91A85351D}"
+	ProjectSection(SolutionItems) = preProject
+		ResetIdentityCounter.sql = ResetIdentityCounter.sql
+		Truncate.sql = Truncate.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,5 +25,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D21381F2-5331-4511-A69A-4D47B0551E28}
 	EndGlobalSection
 EndGlobal
