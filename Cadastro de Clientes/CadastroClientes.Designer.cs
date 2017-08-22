@@ -46,36 +46,37 @@
             this.nomeErrorLabel = new System.Windows.Forms.Label();
             this.telefoneErrorLabel = new System.Windows.Forms.Label();
             this.infoGroupBox = new System.Windows.Forms.GroupBox();
+            this.excluirButton = new System.Windows.Forms.Button();
             this.cadastroGroupBox.SuspendLayout();
             this.infoGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // listarButton
             // 
-            this.listarButton.Location = new System.Drawing.Point(209, 292);
+            this.listarButton.Location = new System.Drawing.Point(212, 292);
             this.listarButton.Name = "listarButton";
             this.listarButton.Size = new System.Drawing.Size(75, 23);
-            this.listarButton.TabIndex = 6;
+            this.listarButton.TabIndex = 8;
             this.listarButton.Text = "Listar";
             this.listarButton.UseVisualStyleBackColor = true;
             this.listarButton.Click += new System.EventHandler(this.listarButton_Click);
             // 
             // salvarButton
             // 
-            this.salvarButton.Location = new System.Drawing.Point(23, 292);
+            this.salvarButton.Location = new System.Drawing.Point(20, 292);
             this.salvarButton.Name = "salvarButton";
             this.salvarButton.Size = new System.Drawing.Size(75, 23);
-            this.salvarButton.TabIndex = 5;
+            this.salvarButton.TabIndex = 6;
             this.salvarButton.Text = "Salvar";
             this.salvarButton.UseVisualStyleBackColor = true;
             this.salvarButton.Click += new System.EventHandler(this.salvarButton_Click);
             // 
             // limparButton
             // 
-            this.limparButton.Location = new System.Drawing.Point(117, 292);
+            this.limparButton.Location = new System.Drawing.Point(200, 140);
             this.limparButton.Name = "limparButton";
             this.limparButton.Size = new System.Drawing.Size(75, 23);
-            this.limparButton.TabIndex = 6;
+            this.limparButton.TabIndex = 5;
             this.limparButton.Text = "Limpar";
             this.limparButton.UseVisualStyleBackColor = true;
             this.limparButton.Click += new System.EventHandler(this.limparButton_Click);
@@ -169,6 +170,7 @@
             // cadastroGroupBox
             // 
             this.cadastroGroupBox.Controls.Add(this.cpfLabel);
+            this.cadastroGroupBox.Controls.Add(this.limparButton);
             this.cadastroGroupBox.Controls.Add(this.cpfmaskedTextBox);
             this.cadastroGroupBox.Controls.Add(this.enderecoLabel);
             this.cadastroGroupBox.Controls.Add(this.enderecoTextBox);
@@ -179,7 +181,7 @@
             this.cadastroGroupBox.Location = new System.Drawing.Point(12, 12);
             this.cadastroGroupBox.Name = "cadastroGroupBox";
             this.cadastroGroupBox.Size = new System.Drawing.Size(281, 169);
-            this.cadastroGroupBox.TabIndex = 29;
+            this.cadastroGroupBox.TabIndex = 0;
             this.cadastroGroupBox.TabStop = false;
             this.cadastroGroupBox.Text = "Cadastro";
             // 
@@ -191,7 +193,7 @@
             this.cpfErrorLabel.Location = new System.Drawing.Point(9, 34);
             this.cpfErrorLabel.Name = "cpfErrorLabel";
             this.cpfErrorLabel.Size = new System.Drawing.Size(128, 13);
-            this.cpfErrorLabel.TabIndex = 25;
+            this.cpfErrorLabel.TabIndex = 0;
             this.cpfErrorLabel.Text = "O CPF inserido é inválido.";
             this.cpfErrorLabel.Visible = false;
             // 
@@ -203,7 +205,7 @@
             this.enderecoErrorLabel.Location = new System.Drawing.Point(9, 50);
             this.enderecoErrorLabel.Name = "enderecoErrorLabel";
             this.enderecoErrorLabel.Size = new System.Drawing.Size(267, 13);
-            this.enderecoErrorLabel.TabIndex = 26;
+            this.enderecoErrorLabel.TabIndex = 0;
             this.enderecoErrorLabel.Text = "O endereço inserido é muito curto. (mín: 10 caracteres)";
             this.enderecoErrorLabel.Visible = false;
             // 
@@ -215,7 +217,7 @@
             this.nomeErrorLabel.Location = new System.Drawing.Point(9, 18);
             this.nomeErrorLabel.Name = "nomeErrorLabel";
             this.nomeErrorLabel.Size = new System.Drawing.Size(248, 13);
-            this.nomeErrorLabel.TabIndex = 24;
+            this.nomeErrorLabel.TabIndex = 0;
             this.nomeErrorLabel.Text = "O nome inserido é muito curto. (mín: 10 caracteres)";
             this.nomeErrorLabel.Visible = false;
             // 
@@ -227,7 +229,7 @@
             this.telefoneErrorLabel.Location = new System.Drawing.Point(9, 66);
             this.telefoneErrorLabel.Name = "telefoneErrorLabel";
             this.telefoneErrorLabel.Size = new System.Drawing.Size(260, 13);
-            this.telefoneErrorLabel.TabIndex = 27;
+            this.telefoneErrorLabel.TabIndex = 0;
             this.telefoneErrorLabel.Text = "O telefone inserido é muito curto. (mín: 10 caracteres)";
             this.telefoneErrorLabel.Visible = false;
             // 
@@ -241,17 +243,27 @@
             this.infoGroupBox.Location = new System.Drawing.Point(12, 187);
             this.infoGroupBox.Name = "infoGroupBox";
             this.infoGroupBox.Size = new System.Drawing.Size(282, 89);
-            this.infoGroupBox.TabIndex = 28;
+            this.infoGroupBox.TabIndex = 0;
             this.infoGroupBox.TabStop = false;
             this.infoGroupBox.Text = "Informações";
+            // 
+            // excluirButton
+            // 
+            this.excluirButton.Location = new System.Drawing.Point(117, 292);
+            this.excluirButton.Name = "excluirButton";
+            this.excluirButton.Size = new System.Drawing.Size(75, 23);
+            this.excluirButton.TabIndex = 7;
+            this.excluirButton.Text = "Excluir";
+            this.excluirButton.UseVisualStyleBackColor = true;
+            this.excluirButton.Click += new System.EventHandler(this.excluirButton_Click);
             // 
             // CadastroClientes
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(311, 327);
+            this.ClientSize = new System.Drawing.Size(305, 327);
+            this.Controls.Add(this.excluirButton);
             this.Controls.Add(this.cadastroGroupBox);
-            this.Controls.Add(this.limparButton);
             this.Controls.Add(this.listarButton);
             this.Controls.Add(this.salvarButton);
             this.Controls.Add(this.infoGroupBox);
@@ -284,6 +296,7 @@
         private System.Windows.Forms.Label nomeErrorLabel;
         private System.Windows.Forms.Label telefoneErrorLabel;
         private System.Windows.Forms.GroupBox infoGroupBox;
+        private System.Windows.Forms.Button excluirButton;
     }
 }
 

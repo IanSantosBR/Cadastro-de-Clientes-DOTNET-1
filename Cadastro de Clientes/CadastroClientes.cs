@@ -60,6 +60,55 @@ namespace Cadastro_de_Clientes
 
         #endregion
 
+        #region Código responsável por excluir clientes
+
+        private void excluirButton_Click(object sender, EventArgs e)
+        {
+            DesativarLabel();
+            if (ValidaExclusao())
+                using (var bd = new Database(connstr))
+                {
+                    var cliente = bd.Clientes.Where(c => c.Nome == nomeTextBox.Text.Trim() && c.Cpf == cpfmaskedTextBox.Text);
+                    if (cliente.Any())
+                    {
+                        DialogResult = MessageBox.Show(@"Deseja apagar?" + Environment.NewLine + Environment.NewLine + @"Nome: " + nomeTextBox.Text.Trim() + Environment.NewLine + @"CPF: " + cpfmaskedTextBox.Text, @"Confirmação de Exclusão", MessageBoxButtons.YesNo);
+                        if (DialogResult == DialogResult.Yes)
+                        {
+                            bd.Clientes.RemoveRange(cliente);
+                            bd.SaveChanges();
+                            MessageBox.Show(@"Cliente excluído.", @"Confirmação de Exclusão", MessageBoxButtons.OK);
+                            ApagarCampos();
+                        }
+                        else
+                        {
+                            MessageBox.Show(@"Cliente não excluído.", @"Confirmação de Exclusão", MessageBoxButtons.OK);
+                            DesativarLabel();
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show(@"Cliente não existe.", @"Não Encontrado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+        }
+
+        private bool ValidaExclusao()
+        {
+            nomeErrorLabel.Visible = nomeTextBox.TextLength < 10;
+            cpfErrorLabel.Visible = cpfmaskedTextBox.Text.Replace(" ", "").Length < 11;
+            if (nomeErrorLabel.Visible || cpfErrorLabel.Visible)
+                return false;
+            return true;
+        }
+
+        private void DesativarLabel()
+        {
+            foreach (var label in infoGroupBox.Controls.OfType<Label>())
+                label.Visible = false;
+        }
+
+        #endregion
+
         #region Código responsável por apagar todos os campos
 
         private void limparButton_Click(object sender, EventArgs e)
@@ -93,10 +142,10 @@ namespace Cadastro_de_Clientes
 
         private bool ValidaCadastro()
         {
-            nomeErrorLabel.Visible = nomeTextBox.TextLength < 10 || nomeTextBox.Text.Distinct().Count() < 2;
-            cpfErrorLabel.Visible = cpfmaskedTextBox.Text.Replace(" ", "").Length < 11 || cpfmaskedTextBox.Text.Replace(" ", "").Distinct().Count() < 2;
-            enderecoErrorLabel.Visible = enderecoTextBox.Text.Length < 10 || enderecoTextBox.Text.Distinct().Count() < 2;
-            telefoneErrorLabel.Visible = telefoneMaskedTextBox.Text.Replace(" ", "").Length < 10 || telefoneMaskedTextBox.Text.Replace(" ", "").Distinct().Count() < 2;
+            nomeErrorLabel.Visible = nomeTextBox.TextLength < 10;
+            cpfErrorLabel.Visible = cpfmaskedTextBox.Text.Replace(" ", "").Length < 11;
+            enderecoErrorLabel.Visible = enderecoTextBox.Text.Length < 10;
+            telefoneErrorLabel.Visible = telefoneMaskedTextBox.Text.Replace(" ", "").Length < 10;
             if (nomeErrorLabel.Visible || cpfErrorLabel.Visible || enderecoErrorLabel.Visible || telefoneErrorLabel.Visible)
                 return false;
             return true;
